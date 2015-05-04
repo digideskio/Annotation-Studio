@@ -26,18 +26,20 @@
 //= require Math.uuid
 //= require moment.min
 //= require tinymce
-//= require annotator-full.min
-//= require melcatalog-annotator-buttons
-//= require richText-annotator
+//= require annotator.min
 //= require mustache
-//= require annotator.touch.min
 //= require highlighter
 //= require jquery.slimscroll.min
 //= require jquery.xcolor
 //= require ekko-lightbox.min
-//= require annotator-category
+
+// require melcatalog-annotator-buttons
+// require richText-annotator
+// require annotator.touch.min
+// require annotator-category
+// require melcatalog-plugin
+
 //= require underscore
-//= require melcatalog-plugin
 //= require sidebar
 //= require annotation_studio
 
