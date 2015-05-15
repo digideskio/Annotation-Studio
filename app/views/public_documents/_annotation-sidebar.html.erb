@@ -13,18 +13,26 @@ var sidebar_sort_editable = false;
 var mobile_device = <%= mobile_device? -%>;
 var search_context = 'public';
 
-var plugin_options = function() {
+var plugin_settings = function() {
   return {
-    Filter: false,
-    Auth: {
-      token: '<%= session["guest_jwt"] %>'
-    },
     Store: {
       prefix: '<%= ENV["API_URL"] %>',
       annotationData: {
         'uri': [location.protocol, '//', location.host, location.pathname].join(''),
       },
       loadFromSearch: annotation_studio.loadOptions({ mode: 'user' })
+    }
+    <% if ENV["ANNOTATOR_CATEGORIES"] == 'true' -%>
+    , Categories: <%= raw AnnotationCategory.to_plugin_init %>
+    <% end -%>
+  }
+};
+ 
+var plugin_options = function() {
+  return {
+    Filter: false,
+    Auth: {
+      token: '<%= session["guest_jwt"] %>'
     },
     Markdown: false, // use RichText instead
     AnnotateItPermissions: false, // this is built into the kitchen sink, so cancel it
@@ -43,9 +51,6 @@ var plugin_options = function() {
       showViewPermissionsCheckbox: false,
       showEditPermissionsCheckbox: false
     }
-    <% if ENV["ANNOTATOR_CATEGORIES"] == 'true' -%>
-    , Categories: <%= raw AnnotationCategory.to_plugin_init %>
-    <% end -%>
   };
 };
 

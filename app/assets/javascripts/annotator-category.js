@@ -1,17 +1,77 @@
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  __hasProp = {}.hasOwnProperty;
+function categories(options) {
+  options = options || {};
+  options.categories = options.categories || {};
 
-Annotator.Plugin.Categories = (function(_super) {
-  __extends(Categories, _super);
+  return {
+    annotationEditorSubmit: function() {
+      console.log(this);
+      this.setAnnotationCat();
+    },
+    annotationCreated: function(ann) {
+      this.addHighlightMarkup();
+    },
+    annotationUpdated: function(ann) {
+      this.updateHighlightMarkup();
+    },
+    annotationsLoaded: function() {
+      this.loadCategories();
+    },
+    start: function(app) {
+      var cat, color, i, isChecked, _ref;
+  
+      i = 0;
+      _ref = options.categories;
 
-  Categories.prototype.field = null;
-
-  Categories.prototype.input = null;
-
-  Categories.prototype.options = {
-    categories: {}
+// TODO: addField equivalent 
+      if(Object.keys(_ref).length > 0) {
+        this.annotator.editor.addField({
+          id: "annotation-category",
+          label: 'category',
+          type: 'input',
+          load: this.updateField
+        });
+  
+        $('head').append(
+          $('<style/>', {
+            id: 'annotator-category-styles',
+            html: ''
+          })
+        );
+  
+        var category_li = $('#annotation-category').parent();
+        category_li.attr('id', 'annotation-category-selection');
+        for (cat in _ref) {
+          var category = _ref[cat];
+          var button = $('<button>').attr('class', 'btn btn-default').attr('value', cat).text(category.name);
+          button.data('active-color', $.xcolor.opacity('#FFFFFF', category.hex, 0.4).getHex());
+          button.click(function(e) {
+            e.preventDefault();
+            $(this).toggleClass('active').removeAttr('style');
+            if($(this).hasClass('active')) {
+              $(this).css('background-color', $(this).data('active-color'));
+            }
+          });
+          category_li.append(button);
+        }
+        $('#annotation-category').hide();
+      }
+  
+      this.viewer = this.annotator.viewer.addField({
+        load: this.updateViewer
+      });
+      if (this.annotator.plugins.Filter) {
+        this.annotator.plugins.Filter.addFilter({
+          label: 'Categories',
+          property: 'category',
+          isFiltered: Annotator.Plugin.Categories.filterCallback
+        });
+      }
+      return this.input = $(this.field).find(':input');
+    }
   };
+}
+
+/*
 
   function Categories(element, categories) {
     this.loadCategories = __bind(this.loadCategories, this);
@@ -22,68 +82,6 @@ Annotator.Plugin.Categories = (function(_super) {
     this.updateHighlightRules = __bind(this.updateHighlightRules, this);
     this.options.categories = categories;
   }
-
-  Categories.prototype.pluginInit = function() {
-    if (!Annotator.supported()) {
-      return;
-    }
-
-    //FIXME: this.events isn't working for this mapping, so instead, this:
-    this.annotator.subscribe("annotationEditorSubmit", this.setAnnotationCat);
-    this.annotator.subscribe("annotationCreated", this.addHighlightMarkup);
-    this.annotator.subscribe("annotationUpdated", this.updateHighlightMarkup);
-    this.annotator.subscribe("annotationsLoaded", this.loadCategories);
-
-    var cat, color, i, isChecked, _ref;
-
-    i = 0;
-    _ref = this.options.categories;
-
-    if(Object.keys(_ref).length > 0) {
-      this.annotator.editor.addField({
-        id: "annotation-category",
-        label: 'category',
-        type: 'input',
-        load: this.updateField
-      });
-
-      $('head').append(
-        $('<style/>', {
-          id: 'annotator-category-styles',
-          html: ''
-        })
-      );
-
-      var category_li = $('#annotation-category').parent();
-      category_li.attr('id', 'annotation-category-selection');
-      for (cat in _ref) {
-        var category = _ref[cat];
-        var button = $('<button>').attr('class', 'btn btn-default').attr('value', cat).text(category.name);
-        button.data('active-color', $.xcolor.opacity('#FFFFFF', category.hex, 0.4).getHex());
-        button.click(function(e) {
-          e.preventDefault();
-          $(this).toggleClass('active').removeAttr('style');
-          if($(this).hasClass('active')) {
-            $(this).css('background-color', $(this).data('active-color'));
-          }
-        });
-        category_li.append(button);
-      }
-      $('#annotation-category').hide();
-    }
-
-    this.viewer = this.annotator.viewer.addField({
-      load: this.updateViewer
-    });
-    if (this.annotator.plugins.Filter) {
-      this.annotator.plugins.Filter.addFilter({
-        label: 'Categories',
-        property: 'category',
-        isFiltered: Annotator.Plugin.Categories.filterCallback
-      });
-    }
-    return this.input = $(this.field).find(':input');
-  };
 
   Categories.prototype.loadCategories = function(annotations) {
     var _ref = this.options.categories;
@@ -265,3 +263,5 @@ Annotator.Plugin.Categories = (function(_super) {
   return Categories;
 
 })(Annotator.Plugin);
+
+*/

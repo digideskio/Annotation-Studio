@@ -36,7 +36,7 @@
 // require melcatalog-annotator-buttons
 // require richText-annotator
 // require annotator.touch.min
-// require annotator-category
+//= require annotator-category
 // require melcatalog-plugin
 
 //= require underscore

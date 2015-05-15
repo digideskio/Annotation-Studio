@@ -1,15 +1,54 @@
 var sidebar, subscriber, studio;
 
+var annotation_studio_base = function() {
+  return {
+    beforeAnnotationCreated: function(ann) {
+      annotation_studio.createUuid(ann);
+      annotation_studio.addUserName(ann);
+    },
+    annotationCreated: function(ann) {
+      console.log(ann);
+      annotation_studio.loadSidebar(ann);
+      addUuid();
+    },
+    annotationsLoaded: function() {
+      annotation_studio.loadSidebar();
+      annotation_studio.stopSpinner();
+      annotation_studio.handleHash();
+    },
+    annotationEditorShown: function() {
+      annotation_studio.parentIndex();
+    },
+    annotationUpdated: function(ann) {
+      annotation_studio.loadSidebar(ann);
+    },
+    annotationDeleted: function(ann) {
+      annotation_studio.deleteFromSidebar(ann);
+    }
+  }
+};
+
 var annotation_studio = {
   initialize_annotator: function() {
     sidebar = new Sidebar.App();
     sidebar.token = token;
-    //window.sidebar = sidebar;
-    //Backbone.history.start({pushState: true }); //, root: window.location});
 
+    var old_plugin_options = plugin_options();
 
-    var factory = new Annotator.Factory();
-   //console.log(Annotator); 
+    var app = new annotator.App();
+    app.include(annotator.ui.main); 
+//TODO: Figure out how to append to '#textcontent' div only
+    app.include(annotator.storage.http, plugin_settings().Store);
+    app.include(annotation_studio_base);
+    if(plugin_settings().Categories !== undefined) {
+      app.include(categories, { categories: plugin_settings().Categories });
+    } 
+    
+    //studio.annotator("addPlugin", "MelCatalogue");
+    //app.include(mel_catalog); or whatever mel_catalog plugin will be
+
+    app.start();
+
 /*
     var studio = $('#textcontent').annotator(annotatorOptions).annotator('setupPlugins', {}, plugin_options());
     var optionsRichText = {
@@ -20,10 +59,7 @@ var annotation_studio = {
       }
     };
 
-    studio.annotator("addPlugin", "MelCatalogue");
-
     subscriber = $('#textcontent').annotator().data('annotator');
-
     if(mobile_device) {
       studio.annotator("addPlugin", "Touch");
     }
@@ -31,35 +67,20 @@ var annotation_studio = {
       studio.annotator('addPlugin', 'RichText', optionsRichText);
     }
 
-    // When the annotator loads remote data, update sidebar
-    subscriber.subscribe('annotationsLoaded', annotation_studio.loadSidebar);
-    subscriber.subscribe('annotationsLoaded', annotation_studio.stopSpinner);
-    subscriber.subscribe('annotationsLoaded', annotation_studio.handleHash);
-    subscriber.subscribe('annotationEditorShown', annotation_studio.parentIndex);
-
     // Update all highlights with UUIDs
     subscriber.subscribe('annotationsLoaded', __bind(function(annotations) {
       annotations.map(addUuid); // copies the UUID value from the object field to the highlight spans attribute value.
     }, this));
 
-    // Add the UUID to the local annotation object and to the highlight span before saving
-    subscriber.subscribe('beforeAnnotationCreated', annotation_studio.createUuid); // creates, if need be, and adds, both to object, and to highlight.
-    subscriber.subscribe('beforeAnnotationCreated', annotation_studio.addUserName); // creates, if need be, and adds, both to object, and to highlight.
-
-    // Once the local object has been created, load the sidebar from local data (already contains UUID)
-    subscriber.subscribe('annotationCreated', annotation_studio.loadSidebar);
-    subscriber.subscribe('annotationCreated', addUuid);
 
     // When the local object is updated (contains previously created/stored UUID), load the sidebar from local data
-    subscriber.subscribe('annotationUpdated', annotation_studio.loadSidebar);
-    subscriber.subscribe('annotationDeleted', annotation_studio.deleteFromSidebar);
     $(".annotator-checkbox label").text('Allow my groups to view this annotation');
 
+    sidebar.subscriber = subscriber;
+*/
+    
     sidebar.filtered = $('#visibleannotations').hasClass('active');
     sidebar.sort_editable = sidebar_sort_editable;
-    sidebar.subscriber = subscriber;
-
-*/
   },
   loadOptions: function(overrides) {
     var annotation_categories = [];
