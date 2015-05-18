@@ -3,32 +3,28 @@ function categories(options) {
   options.categories = options.categories || {};
 
   return {
-    annotationEditorSubmit: function() {
-      console.log(this);
-      this.setAnnotationCat();
-    },
-    annotationCreated: function(ann) {
-      this.addHighlightMarkup();
-    },
-    annotationUpdated: function(ann) {
-      this.updateHighlightMarkup();
-    },
-    annotationsLoaded: function() {
-      this.loadCategories();
-    },
-    start: function(app) {
-      var cat, color, i, isChecked, _ref;
-  
-      i = 0;
-      _ref = options.categories;
+    editorExtension: function(e) {
+      function updateField(field, annotation) {
+        $('#annotation-category-selection button').removeClass('active').removeAttr('style');
+        if(annotation.annotation_categories !== undefined) {
+          $.each(annotation.annotation_categories, function(i, category) {
+            var button = $('#annotation-category-selection button[value="' + category + '"]');
+            button.addClass('active').removeAttr('style').css('background-color', button.data('active-color'));
+          });
+        }
+        return;
+      }
 
-// TODO: addField equivalent 
+      var i = 0;
+      var _ref = plugin_settings().Categories; //options.categories;
+
+console.log(_ref);
       if(Object.keys(_ref).length > 0) {
-        this.annotator.editor.addField({
+        e.addField({
           id: "annotation-category",
           label: 'category',
           type: 'input',
-          load: this.updateField
+          load: updateField
         });
   
         $('head').append(
@@ -40,6 +36,7 @@ function categories(options) {
   
         var category_li = $('#annotation-category').parent();
         category_li.attr('id', 'annotation-category-selection');
+        var cat;
         for (cat in _ref) {
           var category = _ref[cat];
           var button = $('<button>').attr('class', 'btn btn-default').attr('value', cat).text(category.name);
@@ -55,10 +52,47 @@ function categories(options) {
         }
         $('#annotation-category').hide();
       }
-  
-      this.viewer = this.annotator.viewer.addField({
-        load: this.updateViewer
-      });
+    },
+    viewerExtension: function(v) {
+      //console.log("inside viewer extension");
+      function updateViewer(field, annotation) {
+        field = $(field);
+        var _ref = this.options.categories;
+        field.addClass('annotator-category');
+        if (annotation.annotation_categories !== undefined && annotation.annotation_categories.length > 0) {
+          return field.addClass('annotator-category').html(function() {
+            var category_html = '';
+            $.each(annotation.annotation_categories, function(i, category) {
+              category_html += '<span class="annotation_category_viewer-' +
+                   category + '">' +
+                   _ref[category].name +
+                   '</span>' +
+                   '<span class="viewer_indicator annotation_category-' + category+ '"></span>';
+            });
+            return category_html;
+          });
+        } else {
+          return field.remove();
+        }
+      }
+    },
+    annotationEditorSubmit: function() {
+      console.log(this);
+      this.setAnnotationCat();
+    },
+    annotationCreated: function(ann) {
+//console.log(this);
+//console.log(ann);
+      this.addHighlightMarkup();
+    },
+    annotationUpdated: function(ann) {
+      this.updateHighlightMarkup();
+    },
+    annotationsLoaded: function() {
+      this.loadCategories();
+    },
+    start: function(app) {
+/* 
       if (this.annotator.plugins.Filter) {
         this.annotator.plugins.Filter.addFilter({
           label: 'Categories',
@@ -67,21 +101,12 @@ function categories(options) {
         });
       }
       return this.input = $(this.field).find(':input');
+*/
     }
   };
 }
 
 /*
-
-  function Categories(element, categories) {
-    this.loadCategories = __bind(this.loadCategories, this);
-    this.updateField = __bind(this.updateField, this);
-    this.updateViewer = __bind(this.updateViewer, this);
-    this.addHighlightMarkup = __bind(this.addHighlightMarkup, this);
-    this.updateHighlightMarkup = __bind(this.updateHighlightMarkup, this);
-    this.updateHighlightRules = __bind(this.updateHighlightRules, this);
-    this.options.categories = categories;
-  }
 
   Categories.prototype.loadCategories = function(annotations) {
     var _ref = this.options.categories;
@@ -100,22 +125,6 @@ function categories(options) {
     });
 
     this.updateHighlightRules();
-  };
-
-  Categories.prototype.setViewer = function(viewer, annotations) {
-    var v;
-    return v = viewer;
-  };
-
-  Categories.prototype.updateField = function(field, annotation) {
-    $('#annotation-category-selection button').removeClass('active').removeAttr('style');
-    if(annotation.annotation_categories !== undefined) {
-      $.each(annotation.annotation_categories, function(i, category) {
-        var button = $('#annotation-category-selection button[value="' + category + '"]');
-        button.addClass('active').removeAttr('style').css('background-color', button.data('active-color'));
-      });
-    }
-    return;
   };
 
   Categories.prototype.addHighlightMarkup = function(annotation) {
@@ -238,30 +247,5 @@ function categories(options) {
       }
     });
   };
-
-  Categories.prototype.updateViewer = function(field, annotation) {
-    field = $(field);
-    var _ref = this.options.categories;
-    field.addClass('annotator-category');
-    if (annotation.annotation_categories !== undefined && annotation.annotation_categories.length > 0) {
-      return field.addClass('annotator-category').html(function() {
-        var category_html = '';
-        $.each(annotation.annotation_categories, function(i, category) {
-          category_html += '<span class="annotation_category_viewer-' +
-               category + '">' +
-               _ref[category].name +
-               '</span>' +
-               '<span class="viewer_indicator annotation_category-' + category+ '"></span>';
-        });
-        return category_html;
-      });
-    } else {
-      return field.remove();
-    }
-  };
-
-  return Categories;
-
-})(Annotator.Plugin);
 
 */

@@ -36,13 +36,17 @@ var annotation_studio = {
     var old_plugin_options = plugin_options();
 
     var app = new annotator.App();
-    app.include(annotator.ui.main); 
+
+    if(plugin_settings().Categories !== undefined) {
+      app.include(categories, { categories: plugin_settings().Categories });
+    }
+
+    app.include(annotator.ui.main, {
+      viewerExtensions: [categories().editorExtension()]
+    }); 
 //TODO: Figure out how to append to '#textcontent' div only
     app.include(annotator.storage.http, plugin_settings().Store);
     app.include(annotation_studio_base);
-    if(plugin_settings().Categories !== undefined) {
-      app.include(categories, { categories: plugin_settings().Categories });
-    } 
     
     //studio.annotator("addPlugin", "MelCatalogue");
     //app.include(mel_catalog); or whatever mel_catalog plugin will be
