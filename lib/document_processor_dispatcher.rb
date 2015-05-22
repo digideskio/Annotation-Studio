@@ -4,7 +4,7 @@ class DocumentProcessorDispatcher
       return ProcessorFake
     end
 
-    if mime_type.in?('application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    if ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].include?(mime_type)
       GoogleDriveProcessor
     elsif mime_type == 'application/pdf'
       PdfProcessor
