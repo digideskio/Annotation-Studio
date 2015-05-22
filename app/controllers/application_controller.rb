@@ -31,10 +31,6 @@ class ApplicationController < ActionController::Base
     render action: 404, status: :not_found
   end
 
-  def current_tenant
-    Apartment::Tenant.current
-  end
-
   def set_domain_config
     $DOMAIN_CONFIG = DOMAIN_CONFIGS['public']
     if (request.subdomain.present? && DOMAIN_CONFIGS[request.subdomain].present?)
