@@ -13,7 +13,8 @@ describe NullProcessor do
 
   it 'logs when it is called' do
     logger_double = double('Logger stub', warn: '')
-    Rails.should_receive(:logger).and_return(logger_double)
+    expect(Rails.logger).to receive(:warn).and_return(logger_double)
+
 
     described_class.new(1,2)
   end

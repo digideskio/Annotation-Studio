@@ -3,7 +3,7 @@ require 'spec_helper'
 describe DocumentProcessor do
   it "should instantiate a document when performing" do
     document = build(:document, id: 100)
-    Document.should_receive(:find).with(document.id).and_return(document)
+    expect(Document).to receive(:find).with(document.id).and_return(document)
 
     job = described_class.new(document.id, 'a state', 'www')
     job.perform
@@ -11,9 +11,9 @@ describe DocumentProcessor do
 
   it "should use the DocumentProcessorDispatcher to find which processor to use" do
     document = build(:document, id: 100, upload: example_file('example.docx'))
-    Document.stub(:find).with(document.id).and_return(document)
+    allow(Document).to receive(:find).with(document.id).and_return(document)
 
-    DocumentProcessorDispatcher.should_receive(:processor_for).
+    expect(DocumentProcessorDispatcher).to receive(:processor_for).
       with(document.upload.content_type).
       and_return(NullProcessor)
 
@@ -25,10 +25,10 @@ describe DocumentProcessor do
     it 'switches tenants when running a job' do
       Apartment::Tenant.switch!('public')
       document = build(:document, id: 100)
-      Document.should_receive(:find).with(document.id).and_return(document)
+      expect(Document).to receive(:find).with(document.id).and_return(document)
 
-      Apartment::Tenant.should_receive(:switch).with('www')
-      Apartment::Tenant.should_receive(:switch).with(Apartment::Tenant.current)
+      expect(Apartment::Tenant).to receive(:switch!).with('www')
+      expect(Apartment::Tenant).to receive(:switch!).with(Apartment::Tenant.current)
 
       job = described_class.new(document.id, 'a state', 'www')
       job.perform

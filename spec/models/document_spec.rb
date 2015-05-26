@@ -21,7 +21,7 @@ describe Document do
   end
 
   context '#processed?' do
-    it { subject.should_not be_processed }
+    it { expect(subject).not_to be_processed }
 
     it "is true when processed_at? is set" do
       document = build(:document, processed_at: DateTime.now)

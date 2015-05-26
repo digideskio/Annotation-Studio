@@ -20,7 +20,7 @@ describe DocumentsController do
 
       document_processor_double = double(perform: -> {} )
 
-      DocumentProcessor.should_receive(:new).with(
+      expect(DocumentProcessor).to receive(:new).with(
         document.id,
         document.state,
         Apartment::Tenant.current
@@ -32,7 +32,7 @@ describe DocumentsController do
 
   def sign_in_stubbed_user
     user = create(:user, agreement: true)
-    user.stub(:has_role?).and_return(true)
+    allow(user).to receive(:has_role?).and_return(true)
 
     #This uses Devise::TestHelpers to sign in the user through a backdoor.
     #The other "sign_in_user" helper in UserHelper is for integration specs.
@@ -41,8 +41,8 @@ describe DocumentsController do
 
   def build_document
     document = build(:document, id: 1, state: 'published')
-    Document.stub(:new).and_return(document)
-    Document.stub(:save).and_return(true)
+    allow(Document).to receive(:new).and_return(document)
+    allow(Document).to receive(:save).and_return(true)
     document
   end
 end
