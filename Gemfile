@@ -6,11 +6,11 @@ gem 'rails', '4.2.1'
 gem 'unicorn'
 
 gem 'pg'
-gem "newrelic_rpm"#, "~> 3.5.7.59"
+gem "newrelic_rpm"
 
-gem 'devise'#, '>= 2.2.2'
+gem 'devise'
 gem 'cancan'
-gem 'repertoire-groups', '0.0.1', :path => 'vendor/repertoire-groups-0.0.1' #, :require => 'repertoire-groups'
+gem 'repertoire-groups', '0.0.1', :path => 'vendor/repertoire-groups-0.0.1'
 gem 'acts-as-taggable-on'
 gem "friendly_id"
 gem "babosa"
@@ -25,15 +25,15 @@ gem 'apartment'
 
 group :development do
   gem 'sextant'
-  gem 'meta_request'#, '0.2.1'
+  gem 'meta_request'
   gem 'highline'
   gem 'foreman'
 end
 
 group :assets do
   gem "therubyracer"
-  gem 'coffee-rails' #, '~> 3.2.1'
-  gem 'uglifier' #, '>= 1.0.3'
+  gem 'coffee-rails'
+  gem 'uglifier'
   gem 'underscore-rails'
   gem 'backbone-on-rails'
   gem 'mustache'
