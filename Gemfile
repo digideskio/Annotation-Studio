@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.1.4'
+ruby '2.2.2'
 
 gem 'rails', '4.2.1'
 gem 'unicorn'
@@ -9,7 +9,7 @@ gem 'pg'
 gem "newrelic_rpm"
 
 gem 'devise'
-gem 'cancan'
+gem 'cancancan'
 gem 'repertoire-groups', '0.0.1', :path => 'vendor/repertoire-groups-0.0.1'
 gem 'acts-as-taggable-on'
 gem "friendly_id"
