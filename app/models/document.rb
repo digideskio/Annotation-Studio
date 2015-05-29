@@ -24,6 +24,7 @@ require "babosa" # allows cyrillic, other characters in titles (transliterates t
 class Document < ActiveRecord::Base
   belongs_to :user, :autosave => true
   before_validation :add_title, on: :create, unless: :title?
+  before_validation :update_content_type_for_pdf, on: :create, if: :uploaded?
   before_create :add_processed_at, unless: :uploaded?
   ALLOWED_CONTENT_TYPES = %w|application/msword
 application/vnd.openxmlformats-officedocument.wordprocessingml.document
@@ -80,6 +81,13 @@ application/pdf
 
   def title?
     title.present?
+  end
+
+  def update_content_type_for_pdf
+    if ['application/octet-stream', 'binary/octet-stream'].include?(upload_content_type)
+      mime_type = MIME::Types.type_for(upload_file_name)
+      self.upload_content_type = mime_type.first.to_s if mime_type.first
+    end
   end
 
   def add_title

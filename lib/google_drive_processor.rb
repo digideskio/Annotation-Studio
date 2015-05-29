@@ -34,6 +34,30 @@ class GoogleDriveProcessor
   private
 
   def create_session
+=begin
+    # NOTE: google_drive update to 1.0.0 
+    # requires use of Oauth here. For now, Gemfile
+    # forces old version of google_drive
+    client = Google::APIClient.new
+    auth = client.authorization
+    auth.client_id = "YOUR CLIENT ID"
+    auth.client_secret = "YOUR CLIENT SECRET"
+    auth.scope = [
+        "https://www.googleapis.com/auth/drive",
+        "https://spreadsheets.google.com/feeds/"
+    ]
+    auth.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
+    print("1. Open this page:\n%s\n\n" % auth.authorization_uri)
+    print("2. Enter the authorization code shown in the page: ")
+    auth.code = $stdin.gets.chomp
+    auth.fetch_access_token!
+    access_token = auth.access_token
+   
+    # Creates a session.
+    session = GoogleDrive.login_with_oauth(access_token)
+
+    return session
+=end
     GoogleDrive.login(ENV['GOOGLE_USER'], ENV['GOOGLE_PASS'])
   end
 end
