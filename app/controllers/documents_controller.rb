@@ -55,12 +55,13 @@ class DocumentsController < ApplicationController
   # POST /documents
   # POST /documents.json
   def create
-binding.pry
+Rails.logger.warn "step 1 inside create"
     @document = Document.new(documents_params)
     @document.user = current_user
 
     # apply any catalogue content as appropriate
     catalog_content(@document)
+Rails.logger.warn "step 2 after catalog content"
 
     respond_to do |format|
       if @document.save
