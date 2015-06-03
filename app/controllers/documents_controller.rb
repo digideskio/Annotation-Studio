@@ -55,6 +55,7 @@ class DocumentsController < ApplicationController
   # POST /documents
   # POST /documents.json
   def create
+binding.pry
     @document = Document.new(documents_params)
     @document.user = current_user
 
