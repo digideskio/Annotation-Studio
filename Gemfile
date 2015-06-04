@@ -15,7 +15,7 @@ gem 'acts-as-taggable-on'
 gem "friendly_id"
 gem "babosa"
 gem 'high_voltage', '~> 2.1.0'
-gem "aws-sdk"
+gem "aws-sdk", '< 2.0'
 gem "paperclip"
 gem "delayed_job_active_record"
 gem 'google_drive', '0.3.9'
