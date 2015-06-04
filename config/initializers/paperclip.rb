@@ -4,9 +4,6 @@ end
 
 Paperclip::Attachment.default_options[:path] = ':class/:attachment/:tenant/:id_partition/:style/:filename'
 
-Rails.logger.warn "NOTE rails env is: #{Rails.env}"
-Rails.logger.warn "#{Rails.env.inspect}"
-
 if ['production', 'staging', 'public'].include?(Rails.env)
   Paperclip::Attachment.default_options[:storage] = :s3
   Paperclip::Attachment.default_options[:s3_credentials] = {
