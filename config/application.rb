@@ -15,5 +15,9 @@ module AnnotationStudio
     config.encoding = "utf-8"
     config.filter_parameters += [:password]
     config.active_record.raise_in_transactional_callbacks = true
+
+
+config.logger = Logger.new(STDOUT)
+config.logger.level = Logger::DEBUG
   end
 end
